@@ -56,7 +56,7 @@ default_args = {
     'retries': 1,
 }
 
-with DAG('simple_etl_dag', default_args=default_args, schedule_interval='@daily', catchup=False) as dag:
+with DAG('my-first-ETL', default_args=default_args, schedule_interval='@daily', catchup=False) as dag:
     
     extract_task = PythonOperator(
         task_id='extract',
