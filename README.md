@@ -1,7 +1,7 @@
-# Basketball Player Stats ETL System
+# NBA-Statistic-Tracker
 
 ## Description
-The Basketball Player Stats ETL System is designed to automate the extraction, transformation, and loading (ETL) of basketball player statistics from unstructured web pages, specifically from player profiles on Basketball Reference. The goal is to capture raw data and enrich it with advanced analytics, such as performance trends and head-to-head statistics against specific teams. This system targets basketball analysts and enthusiasts who require detailed and digestible insights into player performances.
+The NBA-Statistic-Tracker is designed to automate the extraction, transformation, and loading (ETL) of basketball player statistics from unstructured web pages, specifically from player profiles on Basketball Reference. The goal is to capture raw data and enrich it with advanced analytics, such as performance trends and head-to-head statistics against specific teams. This system targets basketball analysts and enthusiasts who require detailed and digestible insights into player performances.
 
 ## Table of Contents
 1. [Installation](#installation)
@@ -25,8 +25,8 @@ The Basketball Player Stats ETL System is designed to automate the extraction, t
 ### Steps
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/basketball-stats-etl.git
-    cd basketball-stats-etl
+    git clone https://github.com/yourusername/nba-statistic-tracker.git
+    cd nba-statistic-tracker
     ```
 2. Set up the Docker containers:
     ```sh
