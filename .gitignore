@@ -17,4 +17,7 @@ __pycache__/
 .idea/
 
 # Ignore airflow_logs
-.airflow/airflow_logs
+.airflow/airflow_logs/*
+
+# Ignore .env
+.env
