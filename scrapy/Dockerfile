@@ -2,11 +2,11 @@ FROM python:3.8-slim
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy the requirements.txt file from the host to the image
+COPY requirements.txt /usr/src/app/requirements.txt
 
-COPY . .
+RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
 
-# Run scrapy when container starts
+# Set entrypoint to run Scrapy
 ENTRYPOINT ["scrapy"]
-CMD ["crawl", "myspider"]
+CMD ["crawl", "player_stats"]
