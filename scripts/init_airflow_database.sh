@@ -9,3 +9,7 @@ docker-compose run airflow-webserver airflow users create \
     --lastname User \
     --role Admin \
     --email uwgdw88@gmail.com;
+
+# docker-compose down
+# docker-compose build
+# docker-compose up -d
