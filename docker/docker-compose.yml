@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:latest
+    build:
+      context: ./docker/postgres
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -13,7 +14,8 @@ services:
       - "5432:5432"
 
   airflow-webserver:
-    image: apache/airflow:2.3.0
+    build:
+      context: ./docker/airflow
     environment:
       - LOAD_EX=n
       - EXECUTOR=Local
@@ -30,7 +32,8 @@ services:
     command: webserver
 
   airflow-scheduler:
-    image: apache/airflow:2.3.0
+    build:
+      context: ./docker/airflow
     environment:
       - LOAD_EX=n
       - EXECUTOR=Local
@@ -43,6 +46,15 @@ services:
       - ./dags:/opt/airflow/dags
       - airflow_logs:/opt/airflow/logs
     command: scheduler
+
+  scrapy:
+    build:
+      context: ./docker/scrapy
+    environment:
+      - SCRAPY_SETTINGS_MODULE=myproject.settings
+    volumes:
+      - ./scrapy_project:/usr/src/app
+    command: scrapy crawl myspider
 
 volumes:
   postgres_db_data:
