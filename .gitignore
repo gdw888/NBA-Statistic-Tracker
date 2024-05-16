@@ -3,6 +3,7 @@
 
 # Ignore Python virtual environments
 myenv/
+venv/
 
 # Ignore other common files and directories
 *.log
