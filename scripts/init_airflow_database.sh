@@ -1,6 +1,6 @@
 cd ..
 
-docker-compose run airflow-webserver airflow db init
+docker-compose run airflow-webserver airflow db init;
 
 docker-compose run airflow-webserver airflow users create \
     --username admin \
@@ -8,4 +8,4 @@ docker-compose run airflow-webserver airflow users create \
     --firstname Admin \
     --lastname User \
     --role Admin \
-    --email admin@example.com
+    --email uwgdw88@gmail.com;
