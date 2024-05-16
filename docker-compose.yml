@@ -22,6 +22,8 @@ services:
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    env_file:
+      - .env
     depends_on:
       - postgres
     ports:
@@ -29,6 +31,7 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/airflow_logs:/opt/airflow/logs
+      - ${HOST_AIRFLOW_PATH}:/host/airflow  # Use environment variable for the host path
     command: webserver
 
   airflow-scheduler:
@@ -40,21 +43,15 @@ services:
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    env_file:
+      - .env
     depends_on:
       - postgres
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/airflow_logs:/opt/airflow/logs
+      - ${HOST_AIRFLOW_PATH}:/host/airflow  # Use environment variable for the host path
     command: scheduler
-
-  # scrapy:
-  #   build:
-  #     context: ./scrapy
-  #   environment:
-  #     - SCRAPY_SETTINGS_MODULE=myproject.settings
-  #   volumes:
-  #     - ./scrapy_project:/usr/src/app
-  #   command: scrapy crawl myspider
 
 volumes:
   postgres_db_data:

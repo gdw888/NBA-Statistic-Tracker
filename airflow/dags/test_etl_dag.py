@@ -2,39 +2,61 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime
 import pandas as pd
+import os
+from dotenv import load_dotenv
+import json
+import random
+import logging
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def extract(**kwargs):
-    # Create a dummy dataframe
+    logger.info("Starting extract task")
     df = pd.DataFrame({
         'id': [1, 2, 3],
         'value': ['A', 'B', 'C']
     })
-    # Push the dataframe to XCom
-    kwargs['ti'].xcom_push(key='data', value=df.to_dict())
+    df_json = df.to_json(orient='split')
+    kwargs['ti'].xcom_push(key='data', value=df_json)
+    logger.info(f"Extracted DataFrame: {df}")
 
 def transform(**kwargs):
-    # Pull the dataframe from XCom
-    df_dict = kwargs['ti'].xcom_pull(key='data', task_ids='extract')
-    df = pd.DataFrame.from_dict(df_dict)
-    # Add a last_modified column
-    df['last_modified'] = datetime.now()
-    # Push the transformed dataframe to XCom
-    kwargs['ti'].xcom_push(key='data', value=df.to_dict())
+    logger.info("Starting transform task")
+    df_json = kwargs['ti'].xcom_pull(key='data', task_ids='extract')
+    df = pd.read_json(df_json, orient='split')
+    df['random_number'] = [random.randint(1, 100) for _ in range(len(df))]
+    df_json = df.to_json(orient='split')
+    kwargs['ti'].xcom_push(key='data', value=df_json)
+    logger.info(f"Transformed DataFrame: {df}")
 
 def load(**kwargs):
-    # Pull the transformed dataframe from XCom
-    df_dict = kwargs['ti'].xcom_pull(key='data', task_ids='transform')
-    df = pd.DataFrame.from_dict(df_dict)
-    # Save the dataframe to a CSV file
-    df.to_csv('/path/to/your/output.csv', index=False)
+    logger.info("Starting load task")
+    df_json = kwargs['ti'].xcom_pull(key='data', task_ids='transform')
+    df = pd.read_json(df_json, orient='split')
+    output_path = os.getenv("OUTPUT_PATH")
+    host_airflow_path = os.getenv("HOST_AIRFLOW_PATH")
+    container_output_path = output_path.replace(host_airflow_path, '/host/airflow')
+    logger.info(f"Output path from .env: {container_output_path}")
+    if not container_output_path:
+        logger.error("Output path is not set. Please check your .env file.")
+        raise ValueError("Output path is not set")
+    
+    df.to_csv(container_output_path, index=False)
+    logger.info(f"DataFrame successfully written to {container_output_path}")
+    logger.info(f"Final DataFrame: {df}")
 
 default_args = {
     'owner': 'airflow',
-    'start_date': datetime(2023, 1, 1),
+    'start_date': datetime(2024, 5, 16),
     'retries': 1,
 }
 
-with DAG('simple_etl_dag', default_args=default_args, schedule_interval='@daily') as dag:
+with DAG('simple_etl_dag', default_args=default_args, schedule_interval='@daily', catchup=False) as dag:
     
     extract_task = PythonOperator(
         task_id='extract',

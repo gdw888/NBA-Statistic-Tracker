@@ -18,7 +18,10 @@ __pycache__/
 .idea/
 
 # Ignore airflow_logs
-.airflow/airflow_logs/*
+airflow/airflow_logs/*
+
+# Allow .gitkeep
+!airflow/airflow_logs/.gitkeep
 
 # Ignore .env
 .env

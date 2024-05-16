@@ -1,3 +1,4 @@
 pandas
 apache-airflow
+python-dotenv
 psycopg2-binary  # Only if you use PostgreSQL in other parts of your project
