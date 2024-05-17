@@ -31,13 +31,12 @@ jobs:
     - name: Build Docker image
       run: |
         cd airflow
-        docker build -t nba-statistic-tracker-airflow .
+        docker build -t gdw888/docker-images-hub:latest .
         cd ..
 
     - name: Push Docker image
       run: |
-        docker tag nba-statistic-tracker-airflow:latest ${{ secrets.DOCKER_USERNAME }}/nba-statistic-tracker-airflow:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/nba-statistic-tracker-airflow:latest
+        docker push gdw888/docker-images-hub:latest
 
   deploy:
     runs-on: ubuntu-latest
