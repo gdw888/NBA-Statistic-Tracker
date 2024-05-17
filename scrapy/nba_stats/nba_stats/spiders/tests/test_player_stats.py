@@ -2,6 +2,11 @@ import os
 import json
 import pytest
 import re
+import subprocess
+
+# Define the paths to the shell scripts
+ACTIVE_PLAYERS_SCRIPT_PATH = '../scripts/active_players.sh'
+PLAYER_STATS_SCRIPT_PATH = '../scripts/player_stats.sh'
 
 # Define the path to the generated JSON file
 OUTPUT_FILE = '../outputs/player_stats_output.json'
@@ -17,10 +22,23 @@ EXPECTED_KEYS = {
 }
 
 # Sample test data to compare against (Optional)
-EXPECTED_PLAYERS_STATS = [
-    {"player_name": "Precious Achiuwa", "date": "2024-05-14", "team": "NYK", "opponent": "IND", "result": "W 121-91", "minutes_played": "23", "field_goals": "2", "field_goal_attempts": "6", "field_goal_percentage": ".333", "three_point_field_goals": "0", "three_point_field_goal_attempts": "1", "three_point_field_goal_percentage": ".000", "free_throws": "0", "free_throw_attempts": "0", "free_throw_percentage": None, "offensive_rebounds": "2", "defensive_rebounds": "3", "total_rebounds": "5", "assists": "2", "steals": "2", "blocks": "2", "turnovers": "0", "personal_fouls": "4", "points": "4", "game_score": "6.1", "plus_minus": "15"},
-    {"player_name": "Precious Achiuwa", "date": "2024-05-12", "team": "NYK", "opponent": "IND", "result": "L 89-121", "minutes_played": "24", "field_goals": "4", "field_goal_attempts": "7", "field_goal_percentage": ".571", "three_point_field_goals": "0", "three_point_field_goal_attempts": "0", "three_point_field_goal_percentage": None, "free_throws": "0", "free_throw_attempts": "2", "free_throw_percentage": ".000", "offensive_rebounds": "5", "defensive_rebounds": "1", "total_rebounds": "6", "assists": "0", "steals": "0", "blocks": "0", "turnovers": "0", "personal_fouls": "0", "points": "8", "game_score": "7.7", "plus_minus": "-22"}
-]
+EXPECTED_PLAYERS_STATS = []
+
+@pytest.fixture(scope="module", autouse=True)
+def run_shell_scripts():
+    # Ensure the active players shell script exists
+    assert os.path.exists(ACTIVE_PLAYERS_SCRIPT_PATH), f"{ACTIVE_PLAYERS_SCRIPT_PATH} does not exist"
+    
+    # Run the active players shell script
+    process_active_players = subprocess.Popen(['sh', ACTIVE_PLAYERS_SCRIPT_PATH])
+    process_active_players.wait()
+
+    # Ensure the player stats shell script exists
+    assert os.path.exists(PLAYER_STATS_SCRIPT_PATH), f"{PLAYER_STATS_SCRIPT_PATH} does not exist"
+    
+    # Run the player stats shell script
+    process_player_stats = subprocess.Popen(['sh', PLAYER_STATS_SCRIPT_PATH])
+    process_player_stats.wait()
 
 @pytest.fixture
 def json_data():
@@ -47,7 +65,8 @@ def test_json_content(json_data):
     percentage_pattern = re.compile(r'^(\d*\.\d{3}|None)$')
     number_pattern = re.compile(r'^\d+$')
     nullable_number_pattern = re.compile(r'^(\d+|None)$')
-    result_pattern = re.compile(r'^[WL] \d{2,3}-\d{2,3}$')
+    result_pattern = re.compile(r'^[WL] \d{2,3}-\d{2,3}( \(\d*OT\))?$')
+    game_score_pattern = re.compile(r'^-?\d+(\.\d+)?$')  # Updated pattern to allow negative numbers
 
     for player_stat in json_data:
         # Validate player_name
@@ -85,7 +104,7 @@ def test_json_content(json_data):
         assert nullable_number_pattern.match(str(player_stat['turnovers'])), "Turnovers does not match the expected format"
         assert nullable_number_pattern.match(str(player_stat['personal_fouls'])), "Personal fouls does not match the expected format"
         assert nullable_number_pattern.match(str(player_stat['points'])), "Points does not match the expected format"
-        assert re.match(r'^\d+(\.\d+)?$', str(player_stat['game_score'])), "Game score does not match the expected format"
+        assert game_score_pattern.match(str(player_stat['game_score'])), "Game score does not match the expected format"
         assert re.match(r'^-?\d+(\.\d+)?$', str(player_stat['plus_minus'])), "Plus minus does not match the expected format"
 
 # Run the tests

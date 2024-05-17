@@ -1,6 +1,10 @@
 import os
 import json
 import pytest
+import subprocess
+
+# Define the path to the shell script
+SCRIPT_PATH = '../scripts/active_players.sh'
 
 # Define the path to the generated JSON file
 OUTPUT_FILE = '../outputs/active_players.json'
@@ -10,6 +14,14 @@ EXPECTED_KEYS = {'name', 'url'}
 
 # Sample test data to compare against (Optional)
 EXPECTED_PLAYERS = []
+
+@pytest.fixture(scope="module", autouse=True)
+def run_shell_script():
+    # Ensure the shell script exists
+    assert os.path.exists(SCRIPT_PATH), f"{SCRIPT_PATH} does not exist"
+    
+    # Run the shell script
+    subprocess.run(['sh', SCRIPT_PATH], check=True)
 
 @pytest.fixture
 def json_data():

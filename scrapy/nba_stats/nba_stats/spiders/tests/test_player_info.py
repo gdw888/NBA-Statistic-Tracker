@@ -2,6 +2,11 @@ import os
 import json
 import pytest
 import re
+import subprocess
+
+# Define the paths to the shell scripts
+ACTIVE_PLAYERS_SCRIPT_PATH = '../scripts/active_players.sh'
+PLAYER_INFO_SCRIPT_PATH = '../scripts/player_info.sh'
 
 # Define the path to the generated JSON file
 OUTPUT_FILE = '../outputs/player_info_output.json'
@@ -11,6 +16,22 @@ EXPECTED_KEYS = {'player_name', 'birth_date', 'birth_year'}
 
 # Sample test data to compare against (Optional)
 EXPECTED_PLAYERS = []
+
+@pytest.fixture(scope="module", autouse=True)
+def run_shell_scripts():
+    # Ensure the active players shell script exists
+    assert os.path.exists(ACTIVE_PLAYERS_SCRIPT_PATH), f"{ACTIVE_PLAYERS_SCRIPT_PATH} does not exist"
+    
+    # Run the active players shell script
+    process_active_players = subprocess.Popen(['sh', ACTIVE_PLAYERS_SCRIPT_PATH])
+    process_active_players.wait()
+
+    # Ensure the player info shell script exists
+    assert os.path.exists(PLAYER_INFO_SCRIPT_PATH), f"{PLAYER_INFO_SCRIPT_PATH} does not exist"
+    
+    # Run the player info shell script
+    process_player_info = subprocess.Popen(['sh', PLAYER_INFO_SCRIPT_PATH])
+    process_player_info.wait()
 
 @pytest.fixture
 def json_data():
