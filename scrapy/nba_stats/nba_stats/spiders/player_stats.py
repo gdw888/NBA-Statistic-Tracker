@@ -13,6 +13,9 @@ class PlayerStatsSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super(PlayerStatsSpider, self).__init__(*args, **kwargs)
         
+        # Debug code to print self.json_file_path
+        self.logger.debug(f"JSON file path: {self.json_file_path}")
+
         # Read the JSON file and extract the URLs
         with open(self.json_file_path, 'r') as file:
             players = json.load(file)
