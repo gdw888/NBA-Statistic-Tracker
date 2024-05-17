@@ -30,7 +30,9 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -f airflow/Dockerfile -t nba-statistic-tracker-airflow .
+        cd airflow
+        docker build -t nba-statistic-tracker-airflow .
+        cd ..
 
     - name: Push Docker image
       run: |
