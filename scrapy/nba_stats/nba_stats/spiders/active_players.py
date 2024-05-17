@@ -6,7 +6,8 @@ class ActivePlayersSpider(scrapy.Spider):
     allowed_domains = ["basketball-reference.com"]
     
     # Generate start_urls for all letters from 'a' to 'z'
-    start_urls = [f"https://www.basketball-reference.com/players/{chr(letter)}/" for letter in range(ord('a'), ord('z') + 1)]
+    #start_urls = [f"https://www.basketball-reference.com/players/{chr(letter)}/" for letter in range(ord('a'), ord('z') + 1)]
+    start_urls = [f"https://www.basketball-reference.com/players/{chr(letter)}/" for letter in range(ord('a'), ord('b') + 1)]
 
     def parse(self, response):
         # Extract active players' links

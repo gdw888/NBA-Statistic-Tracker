@@ -25,3 +25,6 @@ airflow/airflow_logs/*
 
 # Ignore .env
 .env
+
+# Ignore test output
+scrapy/nba_stats/nba_stats/spiders/outputs
