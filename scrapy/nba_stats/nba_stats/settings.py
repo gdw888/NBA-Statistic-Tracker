@@ -92,6 +92,10 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
+DOWNLOAD_DELAY = 2  # Time in seconds
+COOKIES_ENABLED = True
+
 
 # Save the output to a JSON file
 # In your settings.py, add or modify the following line to enable JSON output
@@ -104,3 +108,7 @@ FEEDS = {
         'indent': 4,
     },
 }
+
+
+
+

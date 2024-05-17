@@ -1,6 +1,11 @@
 import scrapy
+import json
+import os
 
 class PlayerStatsSpider(scrapy.Spider):
+    name = "player_stats"
+    allowed_domains = ["basketball-reference.com"]
+
     name = "player_stats"
     allowed_domains = ["basketball-reference.com"]
     
@@ -10,6 +15,19 @@ class PlayerStatsSpider(scrapy.Spider):
         "https://www.basketball-reference.com/players/e/edwaran01.html"
         # Add more player URLs as needed
     ]
+
+
+    # # Path to the JSON file containing player URLs
+    # json_file_path = os.path.join(os.path.dirname(__file__), 'active_players.json')
+    
+    # def __init__(self, *args, **kwargs):
+    #     super(PlayerStatsSpider, self).__init__(*args, **kwargs)
+        
+    #     # Read the JSON file and extract the URLs
+    #     with open(self.json_file_path, 'r') as file:
+    #         players = json.load(file)
+        
+    #     self.start_urls = [player['url'] for player in players]
 
     def parse(self, response):
         self.logger.info("Parsing the page: %s", response.url)
@@ -97,15 +115,3 @@ class PlayerStatsSpider(scrapy.Spider):
                 'game_score': game_score,
                 'plus_minus': plus_minus,
             }
-
-# Ensure the output settings in settings.py are properly configured
-# settings.py:
-# FEEDS = {
-#     'output.json': {
-#         'format': 'json',
-#         'encoding': 'utf8',
-#         'store_empty': False,
-#         'fields': None,
-#         'indent': 4,
-#     },
-# }
