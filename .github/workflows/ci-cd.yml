@@ -25,15 +25,25 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build Docker image
+    - name: Build Airflow Docker image
       run: |
         cd airflow
         docker build -t gdw888/docker-images-hub:nba-statistic-tracker-airflow .
         cd ..
 
-    - name: Push Docker image
+    - name: Push Airflow Docker image 
       run: |
         docker push gdw888/docker-images-hub:nba-statistic-tracker-airflow
+
+    - name: Build scrapy Docker image
+      run: |
+        cd scrapy
+        docker build -t gdw888/docker-images-hub:nba-statistic-tracker-scrapy .
+        cd ..
+
+    - name: Push scrapy Docker image 
+      run: |
+        docker push gdw888/docker-images-hub:nba-statistic-tracker-scrapy
 
   test:
     runs-on: ubuntu-latest
